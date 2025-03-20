@@ -1,14 +1,89 @@
-<div class="container">
-    <h1 class="mt-5">Projects</h1>
-    <form action="{{ url_for('create_project') }}" method="POST" class="form-inline my-4">
-        <input type="text" name="project_name" class="form-control mr-2" placeholder="Enter a new project" required>
-        <button type="submit" class="btn btn-success">Add Project</button>
-    </form>
-    <ul class="list-group mb-5">
-        {% for project in projects %}
-            <li class="list-group-item">
-                <a href="{{ url_for('project_tasks', project_id=project.id) }}">{{ project.name }}</a>
-            </li>
-        {% endfor %}
-    </ul>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Enhanced background design */
+        body {
+            background: linear-gradient(135deg, #d4f8da, #a4e4b5); /* Subtle green gradient */
+            background-repeat: no-repeat;
+            background-attachment: fixed; /* Fixed gradient for a modern look */
+            background-size: cover; /* Ensure gradient covers the entire viewport */
+        }
+
+        .container {
+            margin-top: 50px;
+            background-color: #ffffff; /* White content box */
+            border-radius: 10px; /* Rounded corners for aesthetics */
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+            padding: 30px; /* Inner spacing for content */
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #2c3e50; /* Darker header text for contrast */
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        form {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        input {
+            width: 50%;
+            box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1); /* Light shadow for inputs */
+        }
+
+        .list-group-item {
+            font-size: 1.2rem;
+            color: #495057;
+            transition: background-color 0.2s ease, transform 0.2s ease; /* Smooth effects */
+        }
+
+        .list-group-item:hover {
+            background-color: #eef8f1; /* Light green on hover */
+            transform: scale(1.02); /* Slightly scales on hover */
+        }
+
+        a.list-group-item {
+            text-decoration: none; /* Remove underline for list links */
+        }
+
+        a.list-group-item:hover {
+            text-decoration: none;
+            color: #0056b3; /* Slightly darker blue for hover effect */
+        }
+
+        .btn {
+            margin-right: 5px; /* Space between buttons */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <h1>Projects</h1>
+        <!-- Add Project Form -->
+        <form action="{{ url_for('create_project') }}" method="POST" class="form-inline">
+            <input type="text" name="project_name" class="form-control mr-2" placeholder="Enter a new project" required>
+            <button type="submit" class="btn btn-primary">Add Project</button>
+        </form>
+
+        <!-- Project List -->
+        <ul class="list-group">
+            {% for project in projects %}
+                <a href="{{ url_for('project_tasks', project_id=project.id) }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    <span>{{ project.name }}</span>
+                    <span class="badge badge-primary badge-pill">View Tasks</span>
+                </a>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

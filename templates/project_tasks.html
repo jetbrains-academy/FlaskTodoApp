@@ -2,16 +2,78 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ project.name }} - Tasks</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Enhanced background design */
+        body {
+            background: linear-gradient(135deg, #d4f8da, #a4e4b5); /* Subtle green gradient */
+            background-repeat: no-repeat;
+            background-attachment: fixed; /* Fixed position for the gradient */
+            background-size: cover; /* Ensure the gradient covers the entire viewport */
+        }
+
+        .container {
+            margin-top: 50px;
+            background-color: #ffffff; /* White box for content */
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+            padding: 30px; /* Inner spacing */
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #2c3e50; /* Darker text for better readability */
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        form {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        input {
+            width: 50%;
+            box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .list-group-item {
+            font-size: 1.2rem;
+            color: #495057;
+            transition: background-color 0.2s ease, transform 0.2s ease; /* Add a smooth hover effect */
+        }
+
+        .list-group-item:hover {
+            background-color: #eef8f1;
+            transform: scale(1.02); /* Slightly grow the item */
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: none;
+            color: #0056b3;
+        }
+
+        .btn {
+            margin-right: 5px;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1 class="mt-5">{{ project.name }} - Tasks</h1>
-        <a href="{{ url_for('home') }}" class="btn btn-secondary mb-4">Back to All Projects</a>
+        <!-- Header -->
+        <h1>Tasks in "{{ project.name }}"</h1>
+        <a href="{{ url_for('home') }}" class="btn btn-secondary mb-4">Back to Projects</a>
 
         <!-- Add Task Form -->
-        <form action="{{ url_for('add_task_to_project', project_id=project.id) }}" method="POST" class="form-inline my-4">
+        <form action="{{ url_for('add_task_to_project', project_id=project.id) }}" method="POST" class="form-inline">
             <input type="text" name="task" class="form-control mr-2" placeholder="Enter a new task" required>
             <button type="submit" class="btn btn-primary">Add Task</button>
         </form>
