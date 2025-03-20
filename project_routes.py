@@ -28,4 +28,4 @@ def delete_project(project_id):
 @routes_bp.route('/project/<int:project_id>/tasks')
 def project_tasks_redirect(project_id):
     # Redirect to the tasks.project_tasks endpoint
-    return redirect(url_for('tasks.project_tasks', project_id=project_id))
+    return redirect(url_for('routes.project_tasks', project_id=project_id))

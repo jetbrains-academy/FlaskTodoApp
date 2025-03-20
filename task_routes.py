@@ -18,7 +18,7 @@ def toggle_task_complete(task_id):
     task = Task.query.get_or_404(task_id)
     task.complete = not task.complete
     db.session.commit()
-    return redirect(url_for('tasks.project_tasks', project_id=task.project_id))
+    return redirect(url_for('routes.project_tasks', project_id=task.project_id))
 
 
 @routes_bp.route('/delete_task/<int:task_id>')
@@ -26,7 +26,7 @@ def delete_task(task_id):
     task = Task.query.get_or_404(task_id)
     db.session.delete(task)
     db.session.commit()
-    return redirect(url_for('tasks.project_tasks', project_id=task.project_id))
+    return redirect(url_for('routes.project_tasks', project_id=task.project_id))
 
 
 @routes_bp.route('/project/<int:project_id>/add_task', methods=['POST'])
@@ -37,7 +37,7 @@ def add_project_task(project_id):
         new_task = Task(task=task_content, complete=False, project_id=project_id)
         db.session.add(new_task)
         db.session.commit()
-    return redirect(url_for('tasks.project_tasks', project_id=project_id))
+    return redirect(url_for('routes.project_tasks', project_id=project_id))
 
 
 @routes_bp.route('/project/<int:project_id>')
