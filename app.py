@@ -8,6 +8,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///todo.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+
 # Define the Project model
 class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -33,7 +34,6 @@ class Todo(db.Model):
 with app.app_context():
     db.create_all()
 
-
 # Create the database tables (ensure this block runs after adding the new models)
 # Create the database tables
 with app.app_context():
@@ -46,6 +46,7 @@ def home():
     projects = Project.query.all()  # Get all projects
     return render_template('base.html', projects=projects)
 
+
 # Route to add a new task
 @app.route('/add', methods=['POST'])
 def add():
@@ -56,6 +57,7 @@ def add():
         db.session.commit()
     return redirect(url_for('home'))
 
+
 # Route to create a new project
 @app.route('/create_project', methods=['POST'])
 def create_project():
@@ -65,6 +67,7 @@ def create_project():
         db.session.add(new_project)
         db.session.commit()
     return redirect(url_for('home'))
+
 
 # Route to update task status
 @app.route('/update/<int:task_id>')
@@ -86,6 +89,7 @@ def delete(task_id):
     db.session.delete(task)
     db.session.commit()
     return redirect(url_for('project_tasks', project_id=project_id))  # Redirect back to the project tasks page
+
 
 @app.route('/project/<int:project_id>/add_task', methods=['POST'])
 def add_task_to_project(project_id):
@@ -115,6 +119,7 @@ def delete_project(project_id):
 
     return redirect(url_for('home'))  # Redirect to the home page
 
+
 @app.route('/project/<int:project_id>')
 def project_tasks(project_id):
     # Retrieve the project and its associated tasks
@@ -122,6 +127,7 @@ def project_tasks(project_id):
     tasks = Todo.query.filter_by(project_id=project_id).all()
 
     return render_template('project_tasks.html', project=project, tasks=tasks)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
