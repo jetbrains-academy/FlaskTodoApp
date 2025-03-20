@@ -1,6 +1,6 @@
-from flask import Flask, render_template, request, redirect, url_for
-from database_initialization import db  # Import db from the new extensions module
-from models import Project, Task
+from flask import Flask
+from database_initialization import db
+from routes import routes_bp  # Import blueprint for routes
 
 # Constants for configuration
 DATABASE_URI = 'sqlite:///todo.db'
@@ -12,85 +12,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = TRACK_MODIFICATIONS
 db.init_app(app)  # Bind the database to the app
 
-
-# Extracted function: Initializes the database
-def init_db():
-    with app.app_context():
-        db.create_all()
-
-
-# Initialize database
-init_db()
-
-
-# Routes
-@app.route('/')
-def home():
-    projects = Project.query.all()
-    return render_template('base.html', projects=projects)
-
-
-@app.route('/add_task', methods=['POST'])
-def add_task():
-    task_content = request.form.get('task')
-    if task_content:
-        new_task = Task(task=task_content, complete=False)
-        db.session.add(new_task)
-        db.session.commit()
-    return redirect(url_for('home'))
-
-
-@app.route('/create_project', methods=['POST'])
-def create_project():
-    project_name = request.form.get('project_name')
-    if project_name:
-        new_project = Project(name=project_name)
-        db.session.add(new_project)
-        db.session.commit()
-    return redirect(url_for('home'))
-
-
-@app.route('/toggle_task_complete/<int:task_id>')
-def toggle_task_complete(task_id):
-    task = Task.query.get_or_404(task_id)
-    task.complete = not task.complete
-    db.session.commit()
-    return redirect(url_for('project_tasks', project_id=task.project_id))
-
-
-@app.route('/delete_task/<int:task_id>')
-def delete_task(task_id):
-    task = Task.query.get_or_404(task_id)
-    db.session.delete(task)
-    db.session.commit()
-    return redirect(url_for('project_tasks', project_id=task.project_id))
-
-
-@app.route('/project/<int:project_id>/add_task', methods=['POST'])
-def add_project_task(project_id):
-    project = Project.query.get_or_404(project_id)
-    task_content = request.form.get('task')
-    if task_content:
-        new_task = Task(task=task_content, complete=False, project_id=project_id)
-        db.session.add(new_task)
-        db.session.commit()
-    return redirect(url_for('project_tasks', project_id=project_id))
-
-
-@app.route('/delete_project/<int:project_id>', methods=['POST'])
-def delete_project(project_id):
-    project = Project.query.get_or_404(project_id)
-    Task.query.filter_by(project_id=project_id).delete()  # Cascade delete tasks
-    db.session.delete(project)
-    db.session.commit()
-    return redirect(url_for('home'))
-
-
-@app.route('/project/<int:project_id>')
-def project_tasks(project_id):
-    project = Project.query.get_or_404(project_id)
-    tasks = Task.query.filter_by(project_id=project_id).all()
-    return render_template('project_tasks.html', project=project, tasks=tasks)
+# Register routes
+app.register_blueprint(routes_bp)  # Register routes from routes.py
 
 
 if __name__ == '__main__':
