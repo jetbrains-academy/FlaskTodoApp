@@ -70,9 +70,13 @@ def create_project():
 @app.route('/update/<int:task_id>')
 def update(task_id):
     task = Todo.query.get_or_404(task_id)
-    task.complete = not task.complete
+    project_id = task.project_id  # Retrieve the associated project ID
+    task.complete = not task.complete  # Toggle the completion status
     db.session.commit()
-    return redirect(url_for('home'))
+
+    # Redirect back to the project's task list page
+    return redirect(url_for('project_tasks', project_id=project_id))
+
 
 # Route to delete a task
 @app.route('/delete/<int:task_id>')
