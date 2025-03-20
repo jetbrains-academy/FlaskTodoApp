@@ -78,9 +78,10 @@ def update(task_id):
 @app.route('/delete/<int:task_id>')
 def delete(task_id):
     task = Todo.query.get_or_404(task_id)
+    project_id = task.project_id  # Retrieve the associated project ID
     db.session.delete(task)
     db.session.commit()
-    return redirect(url_for('home'))
+    return redirect(url_for('project_tasks', project_id=project_id))  # Redirect back to the project tasks page
 
 @app.route('/project/<int:project_id>/add_task', methods=['POST'])
 def add_task_to_project(project_id):

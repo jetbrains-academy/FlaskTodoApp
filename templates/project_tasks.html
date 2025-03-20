@@ -106,31 +106,38 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <h1>Tasks in "{{ project.name }}"</h1>
-        <a href="{{ url_for('home') }}" class="btn btn-secondary mb-4">Back to Projects</a>
+<div class="container">
+    <!-- Header -->
+    <h1>Tasks in "{{ project.name }}"</h1>
+    <a href="{{ url_for('home') }}" class="btn btn-secondary mb-4">Back to Projects</a>
 
-        <!-- Add Task Form -->
-        <form action="{{ url_for('add_task_to_project', project_id=project.id) }}" method="POST" class="form-inline">
-            <input type="text" name="task" class="form-control mr-2" placeholder="Enter a new task" required>
-            <button type="submit" class="btn btn-success">Add Task</button>
-        </form>
+    <!-- Add Task Form -->
+    <form action="{{ url_for('add_task_to_project', project_id=project.id) }}" method="POST" class="form-inline">
+        <input type="text" name="task" class="form-control mr-2" placeholder="Enter a new task" required>
+        <button type="submit" class="btn btn-success">Add Task</button>
+    </form>
 
-        <!-- Task List -->
-        <ul class="list-group">
-            {% for task in tasks %}
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span class="{% if task.complete %}text-decoration-line-through{% endif %}">{{ task.task }}</span>
-                    <div>
-                        <a href="{{ url_for('update', task_id=task.id) }}" class="btn btn-sm {% if task.complete %}btn-warning{% else %}btn-success{% endif %} mr-2">
-                            {% if task.complete %}Undo{% else %}Complete{% endif %}
-                        </a>
-                        <a href="{{ url_for('delete', task_id=task.id) }}" class="btn btn-sm btn-danger">Delete</a>
-                    </div>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
+    <!-- Task List -->
+    <ul class="list-group">
+        {% for task in tasks %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span class="{% if task.complete %}text-decoration-line-through{% endif %}">{{ task.task }}</span>
+                <div>
+                    <!-- Complete/Undo button -->
+                    <a href="{{ url_for('update', task_id=task.id) }}"
+                       class="btn btn-sm {% if task.complete %}btn-warning{% else %}btn-success{% endif %} mr-2">
+                        {% if task.complete %}Undo{% else %}Complete{% endif %}
+                    </a>
+
+                    <!-- Delete Task button -->
+                    <a href="{{ url_for('delete', task_id=task.id) }}" class="btn btn-sm btn-danger"
+                       onclick="return confirm('Are you sure you want to delete this task?');">
+                        Delete
+                    </a>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
 </body>
 </html>
