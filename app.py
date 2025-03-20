@@ -1,15 +1,18 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 
-app = Flask(__name__)
+# Constants for configuration
+DATABASE_URI = 'sqlite:///todo.db'
+TRACK_MODIFICATIONS = False
 
-# Configure the SQLite database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///todo.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# Initialize Flask app and configure database
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = TRACK_MODIFICATIONS
 db = SQLAlchemy(app)
 
 
-# Define the Project model
+# Models
 class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
@@ -19,7 +22,6 @@ class Project(db.Model):
         return f'<Project {self.id}: {self.name}>'
 
 
-# Update the Todo model
 class Todo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     task = db.Column(db.String(200), nullable=False)
@@ -30,26 +32,25 @@ class Todo(db.Model):
         return f'<Task {self.id}: {self.task} in Project {self.project_id}>'
 
 
-# Apply the changes to the database
-with app.app_context():
-    db.create_all()
-
-# Create the database tables (ensure this block runs after adding the new models)
-# Create the database tables
-with app.app_context():
-    db.create_all()
+# Extracted function: Initializes the database
+def init_db():
+    with app.app_context():
+        db.create_all()
 
 
-# Define the home route
+# Initialize database
+init_db()
+
+
+# Routes
 @app.route('/')
 def home():
-    projects = Project.query.all()  # Get all projects
+    projects = Project.query.all()
     return render_template('base.html', projects=projects)
 
 
-# Route to add a new task
-@app.route('/add', methods=['POST'])
-def add():
+@app.route('/add_task', methods=['POST'])
+def add_task():
     task_content = request.form.get('task')
     if task_content:
         new_task = Todo(task=task_content, complete=False)
@@ -58,7 +59,6 @@ def add():
     return redirect(url_for('home'))
 
 
-# Route to create a new project
 @app.route('/create_project', methods=['POST'])
 def create_project():
     project_name = request.form.get('project_name')
@@ -69,63 +69,46 @@ def create_project():
     return redirect(url_for('home'))
 
 
-# Route to update task status
-@app.route('/update/<int:task_id>')
-def update(task_id):
+@app.route('/toggle_task_complete/<int:task_id>')
+def toggle_task_complete(task_id):
     task = Todo.query.get_or_404(task_id)
-    project_id = task.project_id  # Retrieve the associated project ID
-    task.complete = not task.complete  # Toggle the completion status
+    task.complete = not task.complete
     db.session.commit()
-
-    # Redirect back to the project's task list page
-    return redirect(url_for('project_tasks', project_id=project_id))
+    return redirect(url_for('project_tasks', project_id=task.project_id))
 
 
-# Route to delete a task
-@app.route('/delete/<int:task_id>')
-def delete(task_id):
+@app.route('/delete_task/<int:task_id>')
+def delete_task(task_id):
     task = Todo.query.get_or_404(task_id)
-    project_id = task.project_id  # Retrieve the associated project ID
     db.session.delete(task)
     db.session.commit()
-    return redirect(url_for('project_tasks', project_id=project_id))  # Redirect back to the project tasks page
+    return redirect(url_for('project_tasks', project_id=task.project_id))
 
 
 @app.route('/project/<int:project_id>/add_task', methods=['POST'])
-def add_task_to_project(project_id):
-    # Get the project where the task will be added
+def add_project_task(project_id):
     project = Project.query.get_or_404(project_id)
     task_content = request.form.get('task')
-
     if task_content:
-        # Create a new task associated with the project
         new_task = Todo(task=task_content, complete=False, project_id=project_id)
         db.session.add(new_task)
         db.session.commit()
-
     return redirect(url_for('project_tasks', project_id=project_id))
 
 
 @app.route('/delete_project/<int:project_id>', methods=['POST'])
 def delete_project(project_id):
-    project = Project.query.get_or_404(project_id)  # Get the project by ID or return 404
-
-    # First, delete associated tasks
-    Todo.query.filter_by(project_id=project_id).delete()
-
-    # Then, delete the project itself
+    project = Project.query.get_or_404(project_id)
+    Todo.query.filter_by(project_id=project_id).delete()  # Cascade delete tasks
     db.session.delete(project)
     db.session.commit()
-
-    return redirect(url_for('home'))  # Redirect to the home page
+    return redirect(url_for('home'))
 
 
 @app.route('/project/<int:project_id>')
 def project_tasks(project_id):
-    # Retrieve the project and its associated tasks
     project = Project.query.get_or_404(project_id)
     tasks = Todo.query.filter_by(project_id=project_id).all()
-
     return render_template('project_tasks.html', project=project, tasks=tasks)
 
 
