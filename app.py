@@ -1,6 +1,8 @@
 from flask import Flask
 from database_initialization import db
-from routes import routes_bp  # Import blueprint for routes
+from project_routes import *
+from task_routes import *
+from routes import *
 
 # Constants for configuration
 DATABASE_URI = 'sqlite:///todo.db'
