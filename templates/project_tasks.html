@@ -6,25 +6,25 @@
     <title>{{ project.name }} - Tasks</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        /* Style matching base.html */
+        /* Styles reused from base template */
         body {
-            background: linear-gradient(to right, #fdfcfb, #e2d1c3, #cfd9df); /* Same soft pastel gradient */
+            background: linear-gradient(to right, #fdfcfb, #e2d1c3, #cfd9df);
             background-repeat: no-repeat;
-            background-attachment: fixed; /* Fixed gradient */
+            background-attachment: fixed;
             background-size: cover;
         }
 
         .container {
             margin-top: 50px;
-            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent content box */
-            border-radius: 15px; /* Rounded corners */
-            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2); /* Same deeper shadow as base.html */
-            padding: 30px; /* Consistent padding */
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+            padding: 30px;
         }
 
         h1 {
             font-size: 2.5rem;
-            color: #2c3e50; /* Same darker text color */
+            color: #2c3e50;
             text-align: center;
             font-weight: bold;
             margin-bottom: 30px;
@@ -107,17 +107,13 @@
 </head>
 <body>
 <div class="container">
-    <!-- Header -->
     <h1>Tasks in "{{ project.name }}"</h1>
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <a href="{{ url_for('home') }}" class="btn btn-secondary btn-sm">
-            ← Back to Projects
-        </a>
+        <a href="{{ url_for('home') }}" class="btn btn-secondary btn-sm">← Back to Projects</a>
     </div>
 
-
     <!-- Add Task Form -->
-    <form action="{{ url_for('add_task_to_project', project_id=project.id) }}" method="POST" class="form-inline">
+    <form action="{{ url_for('add_project_task', project_id=project.id) }}" method="POST" class="form-inline">
         <input type="text" name="task" class="form-control mr-2" placeholder="Enter a new task" required>
         <button type="submit" class="btn btn-success">Add Task</button>
     </form>
@@ -126,19 +122,16 @@
     <ul class="list-group">
         {% for task in tasks %}
             <li class="list-group-item d-flex justify-content-between align-items-center">
-                <span class="{% if task.complete %}text-decoration-line-through{% endif %}">{{ task.task }}</span>
+                <span class="{{ 'text-muted' if task.complete else '' }}">
+                    {{ task.task }}
+                </span>
                 <div>
-                    <!-- Complete/Undo button -->
-                    <a href="{{ url_for('update', task_id=task.id) }}"
-                       class="btn btn-sm {% if task.complete %}btn-warning{% else %}btn-success{% endif %} mr-2">
-                        {% if task.complete %}Undo{% else %}Complete{% endif %}
+                    <!-- Toggle Completion -->
+                    <a href="{{ url_for('toggle_task_complete', task_id=task.id) }}" class="btn btn-warning btn-sm">
+                        {{ 'Mark Incomplete' if task.complete else 'Mark Complete' }}
                     </a>
-
-                    <!-- Delete Task button -->
-                    <a href="{{ url_for('delete', task_id=task.id) }}" class="btn btn-sm btn-danger"
-                       onclick="return confirm('Are you sure you want to delete this task?');">
-                        Delete
-                    </a>
+                    <!-- Delete Task -->
+                    <a href="{{ url_for('delete_task', task_id=task.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this task?')">Delete</a>
                 </div>
             </li>
         {% endfor %}
