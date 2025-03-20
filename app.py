@@ -96,6 +96,20 @@ def add_task_to_project(project_id):
 
     return redirect(url_for('project_tasks', project_id=project_id))
 
+
+@app.route('/delete_project/<int:project_id>', methods=['POST'])
+def delete_project(project_id):
+    project = Project.query.get_or_404(project_id)  # Get the project by ID or return 404
+
+    # First, delete associated tasks
+    Todo.query.filter_by(project_id=project_id).delete()
+
+    # Then, delete the project itself
+    db.session.delete(project)
+    db.session.commit()
+
+    return redirect(url_for('home'))  # Redirect to the home page
+
 @app.route('/project/<int:project_id>')
 def project_tasks(project_id):
     # Retrieve the project and its associated tasks
