@@ -1,0 +1,59 @@
+body {
+    background: linear-gradient(to right, #fdfcfb, #e2d1c3, #cfd9df);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+.container {
+    margin-top: 50px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+    padding: 30px;
+}
+
+h1 {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+form {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 40px;
+}
+
+input {
+    width: 50%;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px; /* Rounded input fields */
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
+    font-size: 1rem;
+}
+
+.form-control:focus {
+    outline: none;
+    box-shadow: 0px 0px 6px rgba(100, 181, 246, 0.8); /* Blue glow focus effect */
+}
+
+.list-group-item {
+    font-size: 1.2rem;
+    color: #495057;
+    background-color: #ffffff;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.list-group-item:hover {
+    background-color: #f1f1f1;
+    transform: translateX(5px);
+}
+
+.btn-success {
+    background-color: #73c6b6;
+    border-color: #4daf90;
+}
