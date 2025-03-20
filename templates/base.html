@@ -1,31 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flask To-Do App</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
-<body>
-    <div class="container">
-        <h1 class="mt-5">To-Do List</h1>
-        <form action="{{ url_for('add') }}" method="POST" class="form-inline my-4">
-            <input type="text" name="task" class="form-control mr-2" placeholder="Enter a new task" required>
-            <button type="submit" class="btn btn-primary">Add Task</button>
-        </form>
-        <ul class="list-group">
-            {% for task in todo_list %}
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span class="{% if task.complete %}text-decoration-line-through{% endif %}">{{ task.task }}</span>
-                    <div>
-                        <a href="{{ url_for('update', task_id=task.id) }}" class="btn btn-sm {% if task.complete %}btn-warning{% else %}btn-success{% endif %} mr-2">
-                            {% if task.complete %}Undo{% else %}Complete{% endif %}
-                        </a>
-                        <a href="{{ url_for('delete', task_id=task.id) }}" class="btn btn-sm btn-danger">Delete</a>
-                    </div>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
-</body>
-</html>
+<div class="container">
+    <h1 class="mt-5">Projects</h1>
+    <form action="{{ url_for('create_project') }}" method="POST" class="form-inline my-4">
+        <input type="text" name="project_name" class="form-control mr-2" placeholder="Enter a new project" required>
+        <button type="submit" class="btn btn-success">Add Project</button>
+    </form>
+    <ul class="list-group mb-5">
+        {% for project in projects %}
+            <li class="list-group-item">
+                <a href="{{ url_for('project_tasks', project_id=project.id) }}">{{ project.name }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
