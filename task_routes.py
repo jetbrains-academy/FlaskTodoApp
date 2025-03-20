@@ -39,9 +39,3 @@ def add_project_task(project_id):
         db.session.commit()
     return redirect(url_for('routes.project_tasks', project_id=project_id))
 
-
-@routes_bp.route('/project/<int:project_id>')
-def project_tasks(project_id):
-    project = Project.query.get_or_404(project_id)
-    tasks = Task.query.filter_by(project_id=project_id).all()
-    return render_template('project_tasks.html', project=project, tasks=tasks)

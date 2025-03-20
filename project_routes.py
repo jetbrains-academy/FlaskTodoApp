@@ -1,4 +1,4 @@
-from flask import request, redirect, url_for
+from flask import request, redirect, url_for, render_template
 
 from models import Project, Task
 from database_initialization import db
@@ -23,9 +23,8 @@ def delete_project(project_id):
     db.session.commit()
     return redirect(url_for('routes.home'))
 
-
-# Proxy route for project_tasks
-@routes_bp.route('/project/<int:project_id>/tasks')
-def project_tasks_redirect(project_id):
-    # Redirect to the tasks.project_tasks endpoint
-    return redirect(url_for('routes.project_tasks', project_id=project_id))
+@routes_bp.route('/project/<int:project_id>')
+def project_tasks(project_id):
+    project = Project.query.get_or_404(project_id)
+    tasks = Task.query.filter_by(project_id=project_id).all()
+    return render_template('project_tasks.html', project=project, tasks=tasks)
