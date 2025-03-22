@@ -1,0 +1,23 @@
+@routes_bp.route('/update_project/<int:project_id>', methods=['POST'])
+def updateProject(projectId):
+    """
+    Update the details of an existing project.
+    """
+    projectDetails = request.form.get('project_name')
+    if not projectDetails:
+        logger.warning("Project name not provided in the update request.")
+        return redirect(url_for('routes.home'))
+
+    try:
+        logger.info(f"Fetching project with ID: {projectId} for update.")
+        project = Project.query.get_or_404(projectId)
+
+        logger.info(f"Updating project '{project.name}' with new details: {projectDetails}")
+        project.name = projectDetails
+
+        db.session.commit()
+        logger.info(f"Project with ID {projectId} updated successfully.")
+    except Exception as e:
+        logger.error(f"Error while updating project with ID {projectId}: {e}")
+
+    return redirect(url_for('routes.home'))
