@@ -31,6 +31,12 @@ def create_project():
     return redirect(url_for('routes.home'))
 
 
+@routes_bp.route('/project/<int:project_id>/description')
+def project_description(project_id):
+    project = Project.query.get_or_404(project_id)
+    return render_template('project_description.html', project=project)
+
+
 @routes_bp.route('/delete_project/<int:project_id>', methods=['POST'])
 def delete_project(project_id):
     try:
