@@ -28,6 +28,11 @@ def delete_task(task_id):
     db.session.commit()
     return redirect(url_for('routes.project_tasks', project_id=task.project_id))
 
+@routes_bp.route('/project/<int:project_id>/description')
+def project_description(project_id):
+    project = Project.query.get_or_404(project_id)
+    return render_template('project_description.html', project=project)
+
 
 @routes_bp.route('/project/<int:project_id>/add_task', methods=['POST'])
 def add_project_task(project_id):
