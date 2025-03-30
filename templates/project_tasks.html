@@ -15,29 +15,42 @@
     </div>
 
     <!-- Add Task Form -->
-    <form action="{{ url_for('routes.add_project_task', project_id=project.id) }}" method="POST" class="form-inline">
-        <input type="text" name="task" class="form-control mr-2" placeholder="Enter a new task" required>
+    <form action="{{ url_for('routes.add_project_task', project_id=project.id) }}" method="POST"
+          class="form-inline mb-4">
+        <div class="form-group mr-2">
+            <input type="text" name="task" class="form-control" placeholder="Enter a new task" required>
+        </div>
+        <div class="form-group mr-2">
+            <input type="text" name="description" class="form-control" placeholder="Enter a task description">
+        </div>
         <button type="submit" class="btn btn-success">Add Task</button>
     </form>
+
 
     <!-- Task List -->
     <ul class="list-group">
         {% for task in tasks %}
             <li class="list-group-item d-flex justify-content-between align-items-center">
-                <span class="{{ 'text-muted' if task.complete else '' }}">
-                    {{ task.task }}
-                </span>
+            <span>
+                <strong class="{{ 'text-muted' if task.complete else '' }}">{{ task.task }}</strong>
+                {% if task.description %}
+                    <p class="mb-0">{{ task.description }}</p>
+                {% endif %}
+            </span>
                 <div>
                     <!-- Toggle Completion -->
-                    <a href="{{ url_for('routes.toggle_task_complete', task_id=task.id) }}" class="btn btn-warning btn-sm">
+                    <a href="{{ url_for('routes.toggle_task_complete', task_id=task.id) }}"
+                       class="btn btn-warning btn-sm">
                         {{ 'Mark Incomplete' if task.complete else 'Mark Complete' }}
                     </a>
                     <!-- Delete Task -->
-                    <a href="{{ url_for('routes.delete_task', task_id=task.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this task?')">Delete</a>
+                    <a href="{{ url_for('routes.delete_task', task_id=task.id) }}" class="btn btn-danger btn-sm"
+                       onclick="return confirm('Are you sure you want to delete this task?')">Delete</a>
                 </div>
             </li>
         {% endfor %}
     </ul>
+
 </div>
 </body>
 </html>

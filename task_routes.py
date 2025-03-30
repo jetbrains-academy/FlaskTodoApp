@@ -33,9 +33,16 @@ def delete_task(task_id):
 def add_project_task(project_id):
     project = Project.query.get_or_404(project_id)
     task_content = request.form.get('task')
+    task_description = request.form.get('description')  # Get the description from form data
     if task_content:
-        new_task = Task(task=task_content, complete=False, project_id=project_id)
+        new_task = Task(
+            task=task_content,
+            description=task_description,  # Save the description
+            complete=False,
+            project_id=project_id
+        )
         db.session.add(new_task)
         db.session.commit()
     return redirect(url_for('routes.project_tasks', project_id=project_id))
+
 

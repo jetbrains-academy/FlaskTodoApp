@@ -17,6 +17,11 @@ db.init_app(app)  # Bind the database to the app
 # Register routes
 app.register_blueprint(routes_bp)  # Register routes from routes.py
 
+with app.app_context():
+    db.create_all()  # Create missing tables
+    if not Project.query.first():  # Seed if empty
+        db.session.add(Project(name="Example Project"))
+        db.session.commit()
 
 if __name__ == '__main__':
     app.run(debug=True)

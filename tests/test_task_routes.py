@@ -2,8 +2,8 @@ import unittest
 from database_initialization import db
 from flask import Flask
 from models import Task, Project
-from task_routes import routes_bp
 from project_routes import routes_bp
+from task_routes import routes_bp
 
 
 class TestAddProjectTask(unittest.TestCase):
@@ -72,3 +72,25 @@ class TestAddProjectTask(unittest.TestCase):
             task = Task.query.filter_by(project_id=project_id, task='Write Tests').first()
             self.assertIsNotNone(task)
             self.assertEqual(task.task, 'Write Tests')
+
+    def test_add_task_with_description(self):
+        with self.app.app_context():
+            project = Project(name='Test Project')
+            db.session.add(project)
+            db.session.commit()
+            project_id = project.id
+
+        response = self.client.post(
+            f'/project/{project_id}/add_task',
+            data={'task': 'Write Tests with Description', 'description': 'Detailed task description'}
+        )
+        self.assertEqual(response.status_code, 302)
+
+        with self.app.app_context():
+            task = Task.query.filter_by(
+                project_id=project_id,
+                task='Write Tests with Description'
+            ).first()
+            self.assertIsNotNone(task)
+            self.assertEqual(task.task, 'Write Tests with Description')
+            self.assertEqual(task.description, 'Detailed task description')
