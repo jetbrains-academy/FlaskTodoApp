@@ -16,7 +16,6 @@ ERROR_CREATING_PROJECT = "An error occurred while creating the project"
 ERROR_DELETING_PROJECT = "An error occurred while deleting the project"
 ERROR_FETCHING_TASKS = "An error occurred while fetching tasks for the project"
 
-TEMPLATE_PROJECT_DESCRIPTION = "project_description.html"
 TEMPLATE_PROJECT_TASKS = "project_tasks.html"
 
 
@@ -38,12 +37,6 @@ def create_project():
         return ERROR_CREATING_PROJECT, 500
 
     return redirect(url_for('routes.home'))
-
-
-@routes_bp.route('/project/<int:project_id>/description')
-def project_description(project_id):
-    project_record = Project.query.get_or_404(project_id)
-    return render_template(TEMPLATE_PROJECT_DESCRIPTION, project=project_record)
 
 
 @routes_bp.route('/delete_project/<int:project_id>', methods=['POST'])
