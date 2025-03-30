@@ -1,5 +1,5 @@
 import logging
-from flask import request, redirect, url_for, render_template
+from flask import request, redirect, url_for, render_template, jsonify
 from models import Project, Task
 from database_initialization import db
 from routes import routes_bp
@@ -33,7 +33,8 @@ def create_project():
         db.session.commit()
         logger.info("Project '%s' successfully created.", project_name)
     except Exception as e:
-        logger.error("%s: %s", ERROR_CREATING_PROJECT, e, exc_info=True)
+        db.session.rollback()
+        logger.info(ERROR_CREATING_PROJECT, e)
         return ERROR_CREATING_PROJECT, 500
 
     return redirect(url_for('routes.home'))
